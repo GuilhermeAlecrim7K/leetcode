@@ -5,21 +5,22 @@ class Leet00118PascalsTriangle
 {
     public IList<IList<int>> Generate(int numRows)
     {
-        var result = new List<IList<int>>
+        var triangle = new List<IList<int>>
         {
             ([1])
         };
-        while (result.Count < numRows)
+        while (triangle.Count < numRows)
         {
-            var previous = result.Last();
-            result.Add([]);
-            result.Last().Add(1);
-            for (int j = 0; j < previous.Count; j++)
+            var previousRow = triangle.Last();
+            var currentRow = new List<int>() { 1 };
+            for (int i = 1; i < previousRow.Count; i++)
             {
-                result.Last().Add(previous.ElementAtOrDefault(j) + previous.ElementAtOrDefault(j + 1));
+                currentRow.Add(previousRow[i - 1] + previousRow[i]);
             }
+            currentRow.Add(1);
+            triangle.Add(currentRow);
         }
-        return result;
+        return triangle;
     }
 
 }
