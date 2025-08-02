@@ -14,4 +14,15 @@ class Leet02404MostFrequentEvenElement
         }
         return evenElements.OrderByDescending(e => e.Value).ThenBy(e => e.Key).Select(e => e.Key).FirstOrDefault(-1);
     }
+
+    public int MostFrequentEvenElementFullyWithLinq(int[] nums)
+    {
+        return nums
+        .Where(n => (n & 1) == 0)
+        .GroupBy(n => n)
+        .OrderByDescending(g => g.Count())
+        .ThenBy(g => g.Key)
+        .Select(g => g.Key)
+        .FirstOrDefault(-1);
+    }
 }
