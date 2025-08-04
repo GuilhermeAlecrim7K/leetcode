@@ -13,9 +13,9 @@ public class Leet0414ThirdMaximumNumber
                 continue;
             if (num > firstMax)
                 (thirdMax, secondMax, firstMax) = (secondMax, firstMax, num);
-            else if (num > (secondMax ?? int.MinValue))
+            else if (secondMax is null || num > secondMax)
                 (thirdMax, secondMax) = (secondMax, num);
-            else if (num > (thirdMax ?? int.MinValue))
+            else if (thirdMax is null || num > thirdMax)
                 thirdMax = num;
         }
 
