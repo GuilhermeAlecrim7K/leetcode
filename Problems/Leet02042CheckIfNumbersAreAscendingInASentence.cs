@@ -4,14 +4,25 @@ public class Leet02042CheckIfNumbersAreAscendingInASentence
 {
     public bool AreNumbersAscending(string s)
     {
-        return s.Split(" ").Aggregate(-1, (n, s) =>
+        var n = s.Length;
+        var previousNumber = int.MaxValue;
+        for (int i = n - 1; i >= 0; i--)
         {
-            if (!int.TryParse(s, out var n2))
-                return n;
-            if (n2 > n)
-                return n2;
-            else
-                return int.MaxValue;
-        }) != int.MaxValue;
+            int? curNumber = null;
+            int j = 1;
+            while (i >= 0 && char.IsDigit(s[i]))
+            {
+                curNumber ??= 0;
+                curNumber += (s[i--] - '0') * j;
+                j *= 10;
+            }
+            if (curNumber is null)
+                continue;
+            if (curNumber >= previousNumber)
+                return false;
+            previousNumber = curNumber ?? 0;
+        }
+
+        return true;
     }
 }
