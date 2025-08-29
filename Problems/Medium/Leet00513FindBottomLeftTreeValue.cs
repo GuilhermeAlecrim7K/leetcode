@@ -9,35 +9,26 @@ public class Leet00513FindBottomLeftTreeValue
         public TreeNode? right = right;
     }
 
+    private int _maxLevel = -1;
+    private int _leftmostMaxLevel = 0;
     public int FindBottomLeftValue(TreeNode root)
     {
-        var level = new Queue<TreeNode>();
-        level.Enqueue(root);
-        var result = root.val;
-        do
+        DFS(0, root);
+        return _leftmostMaxLevel;
+    }
+
+    private void DFS(int level, TreeNode? root)
+    {
+        if (root is null)
+            return;
+
+        if (level > _maxLevel)
         {
-            var valueSet = false;
-            TreeNode? leftMostCurLevel = null;
-            while (level.TryPeek(out var node) && !ReferenceEquals(node, leftMostCurLevel))
-            {
-                if (!valueSet)
-                {
-                    result = node.val;
-                    valueSet = true;
-                }
-                if (node.left is not null)
-                {
-                    level.Enqueue(node.left);
-                    leftMostCurLevel ??= node.left;
-                }
-                if (node.right is not null)
-                {
-                    level.Enqueue(node.right);
-                    leftMostCurLevel ??= node.right;
-                }
-                level.Dequeue();
-            }
-        } while (level.Count > 0);
-        return result;
+            _leftmostMaxLevel = root.val;
+            _maxLevel = level;
+        }
+
+        DFS(level + 1, root.left);
+        DFS(level + 1, root.right);
     }
 }
