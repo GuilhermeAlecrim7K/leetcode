@@ -12,16 +12,13 @@ public class Leet00513FindBottomLeftTreeValue
     public int FindBottomLeftValue(TreeNode root)
     {
         var level = new Queue<TreeNode>();
-        var nextLevel = new Queue<TreeNode>();
-        nextLevel.Enqueue(root);
+        level.Enqueue(root);
         var result = root.val;
         do
         {
-            level.Clear();
-            while (nextLevel.TryDequeue(out var node))
-                level.Enqueue(node);
             var valueSet = false;
-            while (level.TryDequeue(out var node))
+            TreeNode? leftMostCurLevel = null;
+            while (level.TryPeek(out var node) && !ReferenceEquals(node, leftMostCurLevel))
             {
                 if (!valueSet)
                 {
@@ -29,11 +26,18 @@ public class Leet00513FindBottomLeftTreeValue
                     valueSet = true;
                 }
                 if (node.left is not null)
-                    nextLevel.Enqueue(node.left);
+                {
+                    level.Enqueue(node.left);
+                    leftMostCurLevel ??= node.left;
+                }
                 if (node.right is not null)
-                    nextLevel.Enqueue(node.right);
+                {
+                    level.Enqueue(node.right);
+                    leftMostCurLevel ??= node.right;
+                }
+                level.Dequeue();
             }
-        } while (nextLevel.Count > 0);
+        } while (level.Count > 0);
         return result;
     }
 }
