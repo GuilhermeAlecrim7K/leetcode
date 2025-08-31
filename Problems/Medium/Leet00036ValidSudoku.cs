@@ -2,57 +2,33 @@ namespace SharpLeetCode.Problems.Medium;
 
 public class Leet00036ValidSudoku
 {
-    private bool ValidateSlice(IEnumerable<char> slice)
-    {
-        var numbers = new int[10];
-        foreach (var c in slice)
-        {
-            if (c == '.')
-                continue;
-            if (numbers[c - '0']++ > 0)
-                return false;
-        }
-        return true;
-    }
-
     public bool IsValidSudoku(char[][] board)
     {
-        foreach (var slice in board.EnumerateSudokuSlices())
-            if (!ValidateSlice(slice))
-                return false;
+        var n = 9;
+        var rows = new int[n];
+        var columns = new int[n];
+        var blocks = new int[n];
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                if (board[i][j] == '.')
+                    continue;
+                var cellValue = board[i][j] - '1';
+                var cellBitValue = 1 << cellValue;
+                if ((rows[i] & cellBitValue) == cellBitValue)
+                    return false;
+                rows[i] |= cellBitValue;
+                if ((columns[j] & cellBitValue) == cellBitValue)
+                    return false;
+                columns[j] |= cellBitValue;
+                var blockId = i / 3 * 3 + j / 3;
+                if ((blocks[blockId] & cellBitValue) == cellBitValue)
+                    return false;
+                blocks[blockId] |= cellBitValue;
+            }
+        }
         return true;
     }
 
-}
-public static class SudokuHelper
-{
-    public static IEnumerable<char[]> EnumerateSudokuSlices(this char[][] board)
-    {
-        foreach (var row in board)
-            yield return row;
-
-        for (int i = 0, k = 0; i < 9; i++, k = 0)
-        {
-            var column = new char[9];
-            for (int j = 0; j < 9; j++)
-                column[k++] = board[j][i];
-            yield return column;
-        }
-        var blocks = new (int i, int j)[9] {
-            (0, 0), (0, 3), (0, 6),
-            (3, 0), (3, 3), (3, 6),
-            (6, 0), (6, 3), (6, 6),
-        };
-        foreach (var block in blocks)
-        {
-            var k = 0;
-            var blockSlice = new char[9];
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                    blockSlice[k++] = board[block.i + i][block.j + j];
-            }
-            yield return blockSlice;
-        }
-    }
 }
